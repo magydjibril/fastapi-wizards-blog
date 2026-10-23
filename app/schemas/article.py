@@ -14,6 +14,8 @@ class ArticleCreate(ArticleBase):
 class ArticlePublic(ArticleBase):
     id: int
     created_at : datetime
+    slug: str
+    
 
 class ArticleUpdate(BaseModel):
     titre: str | None = None

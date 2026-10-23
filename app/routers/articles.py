@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 from app.models.article import Article
+from app.services.articles import get_article_or_404
 from app.db import DbSession, engine
 from sqlalchemy import select
 from app.schemas.article import ArticleCreate, ArticlePublic, ArticleUpdate
@@ -16,8 +17,7 @@ def get_articles(db: DbSession) -> list[ArticlePublic]: # type: ignore
 
 @router.get("/{id}", responses={404: {"description": "Article Introuvable"}})
 def get_article(db: DbSession, id: int) -> ArticlePublic:
-    if not db.get(Article, id):
-        raise HTTPException(status_code=404, detail="Pas d'article")
+    get_article_or_404(db, id)
     return db.get(Article, id)
 
 @router.post("", name="create_article", response_model=ArticlePublic,status_code=201)
@@ -29,9 +29,7 @@ def created(data: ArticleCreate, db: DbSession) -> ArticlePublic:
 
 @router.patch("/{id}")
 def update_article(article_id: int, data: ArticleUpdate, db: DbSession):
-    article = db.get(Article, article_id) # id = 2 dans la db
-    if not article:
-        raise HTTPException(status_code=404, detail="Pas d'article")
+    article = get_article_or_404(db, article_id)
     for key, value in data.model_dump(exclude_unset=True).items():
         setattr(article,key,value)
     db.commit()
@@ -39,7 +37,7 @@ def update_article(article_id: int, data: ArticleUpdate, db: DbSession):
 
 @router.delete("/{id}", status_code=204)
 def delete_article(article_id: int, db: DbSession):
-    article = db.get(Article, article_id)
+    article = get_article_or_404(db, article_id)
     if not article:
         raise HTTPException(status_code=404, detail="Pas d'article")
     db.delete(article)

@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from app.schemas.article import ArticleBase, ArticleCreate, ArticlePublic
 from app.models.article import Article
-from app.routers import exercices, articles
+from app.routers import exercices, articles, auth
 from app.db import DbSession, engine
 from sqlalchemy import select
 
@@ -20,6 +20,7 @@ app = FastAPI(title="Blog des Wizards", lifespan=lifespan)
 
 app.include_router(exercices.router)
 app.include_router(articles.router)
+app.include_router(auth.router)
 
 
 templates = Jinja2Templates(directory="app/templates")
