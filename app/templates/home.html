@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+    <h1>{{titre}}</h1>
+    <ul>
+        {% for article in articles %}
+            <li>{{article.titre}}</li>
+        {% endfor %} 
+    </ul>
+{% endblock %}
+
+
+

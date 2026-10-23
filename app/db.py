@@ -3,8 +3,10 @@ from typing import Annotated
 
 from fastapi import Depends
 from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+# metadata (objet) sert de conteneur qui répertorie et gère la base de données.
 
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+# sqlalchemy sert à simplifier les requêtes SQL, interaction avec des bases de données relationnelles.
 from app.config import settings
 
 engine = create_engine(settings.database_url)
@@ -33,6 +35,7 @@ SessionFactory = Annotated[sessionmaker[Session], Depends(get_session_factory)]
 def get_db(factory: SessionFactory) -> Iterator[Session]:
     with factory() as db:
         yield db
+        # retourne un itérateur.
 
 
 DbSession = Annotated[Session, Depends(get_db)]
